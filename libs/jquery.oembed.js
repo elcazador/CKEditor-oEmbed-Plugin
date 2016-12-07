@@ -263,6 +263,28 @@
                 var nocache = embedProvider.embedtag.nocache || 0;
                 var height = embedProvider.embedtag.height || 'auto';
                 var src = externalUrl.replace(embedProvider.templateRegex, embedProvider.apiendpoint);
+                // Append to source the time if one was provided.
+                if (externalUrl.match(embedProvider.templateRegex).length > 2) {
+                  var time = externalUrl.match(embedProvider.templateRegex);
+                  var units = time.match(/[hms]+/g);
+                  var digits = time.match(/\d+/g);
+                  var seconds = 0;
+                  for (var i = 0; i < units.length;i++) {
+                    switch (units[i]) {
+                      case 'h':
+                        seconds += Number(digits[i] * 60 * 60);
+                        break;
+                      case 'm':
+			seconds += Number(digits[i] * 60);
+                        break;
+                      case 's':
+			seconds += Number(digits[i]);
+                        break;
+                    }
+                  }
+                  src = src.concat('&start=' + seconds);
+                } 
+
                 if (!embedProvider.nocache) {
                     src += '&jqoemcache=' + rand(5);
                 }
