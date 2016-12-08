@@ -3,9 +3,9 @@
  *
  * Copyright (c) 2009 Richard Chamorro
  * Licensed under the MIT license
- * 
- * Orignal Author: Richard Chamorro 
- * Forked by Andrew Mee to Provide a slightly diffent kind of embedding 
+ *
+ * Orignal Author: Richard Chamorro
+ * Forked by Andrew Mee to Provide a slightly diffent kind of embedding
  * experience
  */
 (function($) {
@@ -115,7 +115,7 @@
         useResponsiveResize: false,
         includeHandle: true,
         embedMethod: 'auto',
-        // "auto", "append", "fill"		
+        // "auto", "append", "fill"
         onProviderNotFound: function() {
         },
         beforeEmbed: function() {
@@ -266,8 +266,8 @@
                 // Append to source the time if one was provided.
                 if (externalUrl.match(embedProvider.templateRegex).length > 2) {
                   var time = externalUrl.match(embedProvider.templateRegex);
-                  var units = time.match(/[hms]+/g);
-                  var digits = time.match(/\d+/g);
+                  var units = time[2].match(/[hms]+/g);
+                  var digits = time[2].match(/\d+/g);
                   var seconds = 0;
                   for (var i = 0; i < units.length;i++) {
                     switch (units[i]) {
@@ -275,15 +275,15 @@
                         seconds += Number(digits[i] * 60 * 60);
                         break;
                       case 'm':
-			seconds += Number(digits[i] * 60);
+                        seconds += Number(digits[i] * 60);
                         break;
                       case 's':
-			seconds += Number(digits[i]);
+                        seconds += Number(digits[i]);
                         break;
                     }
                   }
                   src = src.concat('&start=' + seconds);
-                } 
+                }
 
                 if (!embedProvider.nocache) {
                     src += '&jqoemcache=' + rand(5);
@@ -561,11 +561,11 @@
                     apiendpoint: this.apiendpoint,
                     url: function(externalurl) { return this.apiendpoint + '?format=json&url=' + externalurl; },
                     datareturn: function(results) {
-						
-						if (results.json.type != 'video' && (results.json.url || results.json.thumbnail_url) && !results.json.html.indexOf("iframe") ) {
+
+            if (results.json.type != 'video' && (results.json.url || results.json.thumbnail_url) && !results.json.html.indexOf("iframe") ) {
                             return '<img src="' + (results.json.url || results.json.thumbnail_url) + '"  />';
                         } else if (results.json.html.indexOf("iframe")) {
-							// Quick fix to handle attribute less html5 properties in ckeditor
+              // Quick fix to handle attribute less html5 properties in ckeditor
                             if (results.json.html.indexOf("allowfullscreen>")) {
                                 results.json.html = results.json.html.replace('allowfullscreen>', 'allowfullscreen="false">');
                             }
@@ -610,7 +610,7 @@
                                     height = settings.maxHeight;
                                     width = settings.maxWidth;
 
-                                    
+
                                 }
 
                             }
@@ -730,7 +730,7 @@
         new $.fn.oembed.OEmbedProvider("sapo", "video", ["videos\\.sapo\\.pt/.*"], "http://videos.sapo.pt/oembed", { useYQL: 'json' }),
         new $.fn.oembed.OEmbedProvider("vodpod", "video", ["vodpod.com/watch/.*"], "http://vodpod.com/oembed.js", { useYQL: 'json' }),
         new $.fn.oembed.OEmbedProvider("vimeo", "video", ["www\.vimeo\.com\/groups\/.*\/videos\/.*", "www\.vimeo\.com\/.*", "vimeo\.com\/groups\/.*\/videos\/.*", "vimeo\.com\/.*"], "//vimeo.com/api/oembed.json"),
-		new $.fn.oembed.OEmbedProvider("Nooledge", "video", ["www\.nooledge\.com\/\!\/Vid\/.*"], "//www.nooledge.com/oembed.json"),
+    new $.fn.oembed.OEmbedProvider("Nooledge", "video", ["www\.nooledge\.com\/\!\/Vid\/.*"], "//www.nooledge.com/oembed.json"),
         new $.fn.oembed.OEmbedProvider("dailymotion", "video", ["dailymotion\\.com/.+"], 'http://www.dailymotion.com/services/oembed'),
         new $.fn.oembed.OEmbedProvider("5min", "video", ["www\\.5min\\.com/.+"], 'http://api.5min.com/oembed.xml', { useYQL: 'xml' }),
         new $.fn.oembed.OEmbedProvider("National Film Board of Canada", "video", ["nfb\\.ca/film/.+"], 'http://www.nfb.ca/remote/services/oembed/', { useYQL: 'json' }),
@@ -742,7 +742,7 @@
         new $.fn.oembed.OEmbedProvider("VHX", "video", ["vhx.tv/.+"], "http://vhx.tv/services/oembed.json"),
         new $.fn.oembed.OEmbedProvider("bambuser", "video", ["bambuser.com/.+"], "http://api.bambuser.com/oembed/iframe.json"),
         new $.fn.oembed.OEmbedProvider("justin.tv", "video", ["justin.tv/.+"], 'http://api.justin.tv/api/embed/from_url.json', { useYQL: 'json' }),
-        //Audio 
+        //Audio
         new $.fn.oembed.OEmbedProvider("official.fm", "rich", ["official.fm/.+"], 'http://official.fm/services/oembed', { useYQL: 'json' }),
         new $.fn.oembed.OEmbedProvider("chirbit", "rich", ["chirb.it/.+"], 'http://chirb.it/oembed.json', { useYQL: 'json' }),
         new $.fn.oembed.OEmbedProvider("Huffduffer", "rich", ["huffduffer.com/[-.\\w@]+/\\d+"], "http://huffduffer.com/oembed"),
@@ -793,7 +793,7 @@
         new $.fn.oembed.OEmbedProvider("chart.ly", "photo", ["chart\\.ly/[a-z0-9]{6,8}"], "http://chart.ly/uploads/large_$1.png",
             { templateRegex: /.*ly\/([^\/]+).*/, embedtag: { tag: 'img' }, nocache: 1 }),
         //new $.fn.oembed.OEmbedProvider("stocktwits.com", "photo", ["stocktwits\\.com/message/.+"], "http://charts.stocktwits.com/production/original_$1.png?",
-    //	{ templateRegex: /.*message\/([^\/]+).*/, embedtag: { tag: 'img'},nocache:1 }),
+    //  { templateRegex: /.*message\/([^\/]+).*/, embedtag: { tag: 'img'},nocache:1 }),
         new $.fn.oembed.OEmbedProvider("circuitlab", "photo", ["circuitlab.com/circuit/.+"], "https://www.circuitlab.com/circuit/$1/screenshot/540x405/",
             { templateRegex: /.*circuit\/([^\/]+).*/, embedtag: { tag: 'img' }, nocache: 1 }),
         new $.fn.oembed.OEmbedProvider("23hq", "photo", ["23hq.com/[-.\\w@]+/photo/.+"], "http://www.23hq.com/23/oembed", { useYQL: "json" }),
