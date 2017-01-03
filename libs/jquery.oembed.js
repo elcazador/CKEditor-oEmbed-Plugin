@@ -264,7 +264,7 @@
                 var height = embedProvider.embedtag.height || 'auto';
                 var src = externalUrl.replace(embedProvider.templateRegex, embedProvider.apiendpoint);
                 // Append to source the time if one was provided.
-                if (externalUrl.match(embedProvider.templateRegex).length > 2) {
+                if (externalUrl.match(embedProvider.templateRegex).length > 2 && typeof externalUrl.match(embedProvider.templateRegex)[2] != 'undefined') {
                   var time = externalUrl.match(embedProvider.templateRegex);
                   var units = time[2].match(/[hms]+/g);
                   var digits = time[2].match(/\d+/g);
