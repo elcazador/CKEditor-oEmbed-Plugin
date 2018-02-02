@@ -76,6 +76,7 @@
                                     provider.params = getNormalizedParams(settings[provider.name]) || {};
                                     provider.maxWidth = settings.maxWidth;
                                     provider.maxHeight = settings.maxHeight;
+                                    provider.title = settings.title;
                                     embedCode(container, resourceURL, provider);
                                 } else {
                                     settings.onProviderNotFound.call(container, resourceURL);
@@ -94,6 +95,7 @@
                     provider.params = getNormalizedParams(settings[provider.name]) || {};
                     provider.maxWidth = settings.maxWidth;
                     provider.maxHeight = settings.maxHeight;
+                    provider.title = settings.title;
                     embedCode(container, resourceURL, provider);
                 } else {
                     settings.onProviderNotFound.call(container, resourceURL);
@@ -125,7 +127,8 @@
         onEmbed: false,
         onError: function() {
         },
-        ajaxOptions: { timeout: 2000 }
+        ajaxOptions: { timeout: 2000 },
+        title: null,
     };
 
     function checkProtocol() {
@@ -262,6 +265,7 @@
                 var width = embedProvider.embedtag.width || 'auto';
                 var nocache = embedProvider.embedtag.nocache || 0;
                 var height = embedProvider.embedtag.height || 'auto';
+                var title = settings.title || '';
                 var src = externalUrl.replace(embedProvider.templateRegex, embedProvider.apiendpoint);
                 // Append to source the time if one was provided.
                 if (externalUrl.match(embedProvider.templateRegex).length > 2 && typeof externalUrl.match(embedProvider.templateRegex)[2] != 'undefined') {
@@ -343,11 +347,15 @@
                     code
                         .attr('type', embedProvider.embedtag.type || "application/x-shockwave-flash")
                         .attr('flashvars', externalUrl.replace(embedProvider.templateRegex, flashvars));
+                    if (title !=='')
+                        code.attr('aria-label', title);
                 }
                 if (tag == 'iframe') {
                     code
                         .attr('scrolling', embedProvider.embedtag.scrolling || "no")
                         .attr('frameborder', embedProvider.embedtag.frameborder || "0");
+                    if (title !=='')
+                        code.attr('title', title);
                     /*
                     // make video responsive
                     var styles = {
