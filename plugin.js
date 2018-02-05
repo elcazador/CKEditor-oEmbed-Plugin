@@ -83,6 +83,7 @@
                     },
                     init: function() {
                         var data = {
+                            title: this.element.data('title') || '',
                             oembed: this.element.data('oembed') || '',
                             resizeType: this.element.data('resizeType') || 'noresize',
                             maxWidth: this.element.data('maxWidth') || 560,
@@ -138,17 +139,21 @@
                             jQuery.noConflict();
                             if (typeof(jQuery.fn.oembed) === 'undefined') {
                                 CKEDITOR.scriptLoader.load(
-                                    CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.min.js')
+                                    CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.js')
                                 );
                             }
                         });
 
                     } else if (typeof(jQuery.fn.oembed) === 'undefined') {
-                        CKEDITOR.scriptLoader.load(CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.min.js'));
+                        CKEDITOR.scriptLoader.load(CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.js'));
                     }
                 }
 
-                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget) {
+                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title) {
+                    if (title === '') {
+                        alert(editor.lang.oembed.titleError);
+                        return;
+                    }
                     jQuery('body').oembed(url, {
                         onEmbed: function(e) {
                             var elementAdded = false,
@@ -160,8 +165,11 @@
                                 widget.element.data('maxHeight', maxHeight);
                             }
 
-                            widget.element.data('align', align);
+                            if (title !== '') {
+                                widget.element.data('title', title);
+                            }
 
+                            widget.element.data('align', align);
                             // TODO handle align
                             if (align == 'center') {
                                 if (!widget.inline)
@@ -216,7 +224,9 @@
                         maxHeight: maxHeight,
                         maxWidth: maxWidth,
                         useResponsiveResize: responsiveResize,
-                        embedMethod: 'editor'
+                        embedMethod: 'editor',
+                        title: title,
+                        expandUrl: false,
                     });
                 }
 
@@ -227,6 +237,7 @@
                         minHeight: 155,
                         onShow: function() {
                             var data = {
+                                title: this.widget.element.data('title') || '',
                                 oembed: this.widget.element.data('oembed') || '',
                                 resizeType: this.widget.element.data('resizeType') || 'noresize',
                                 maxWidth: this.widget.element.data('maxWidth'),
@@ -271,6 +282,18 @@
                                         html: '<div style="white-space:normal;width:500px;padding-bottom:10px">' + editor.lang.oembed.pasteUrl + '</div>'
                                     }, {
                                         type: 'text',
+                                        id: 'embedTitle',
+                                        focus: function() {
+                                            this.getElement().focus();
+                                        },
+                                        label: editor.lang.oembed.embedTitle,
+                                        setup: function(widget) {
+                                            if (widget.data.title) {
+                                                this.setValue(widget.data.title);
+                                            }
+                                        },
+                                    }, {
+                                        type: 'text',
                                         id: 'embedCode',
                                         focus: function() {
                                             this.getElement().focus();
@@ -284,6 +307,7 @@
                                         },
                                         commit: function(widget) {
                                             var dialog = CKEDITOR.dialog.getCurrent(),
+                                                title = dialog.getValueOf('general', 'embedTitle'),
                                                 inputCode = dialog.getValueOf('general', 'embedCode').replace(/\s/g, ""),
                                                 resizeType = dialog.getContentElement('general', 'resizeType').
                                                     getValue(),
@@ -323,8 +347,9 @@
                                                 responsiveResize = false;
                                             }
 
-                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget);
+                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title);
 
+                                            widget.setData('title', title);
                                             widget.setData('oembed', inputCode);
                                             widget.setData('resizeType', resizeType);
                                             widget.setData('align', align);
