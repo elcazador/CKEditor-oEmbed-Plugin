@@ -139,13 +139,13 @@
                             jQuery.noConflict();
                             if (typeof(jQuery.fn.oembed) === 'undefined') {
                                 CKEDITOR.scriptLoader.load(
-                                    CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.js')
+                                    CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.min.js')
                                 );
                             }
                         });
 
                     } else if (typeof(jQuery.fn.oembed) === 'undefined') {
-                        CKEDITOR.scriptLoader.load(CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed.js'));
+                        CKEDITOR.scriptLoader.load(CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.oembed..min.js'));
                     }
                 }
 
