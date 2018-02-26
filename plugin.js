@@ -12,6 +12,9 @@
             requires: 'widget,dialog',
             lang: 'ar,ca,cs,de,en,es,fr,nl,pl,pt-br,ru,tr', // %REMOVE_LINE_CORE%
             version: 1.17,
+            onLoad: function() {
+                CKEDITOR.document.appendStyleSheet( this.path + 'css/oembed.css' );
+            },
             init: function(editor) {
                 // Load jquery?
                 loadjQueryLibaries();
@@ -152,7 +155,7 @@
                 function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title) {
                     if (title === '') {
                         alert(editor.lang.oembed.titleError);
-                        return;
+                        return false;
                     }
                     jQuery('body').oembed(url, {
                         onEmbed: function(e) {
@@ -356,7 +359,8 @@
                                             widget.setData('maxWidth', maxWidth);
                                             widget.setData('maxHeight', maxHeight);
                                         }
-                                    }, {
+                                    },
+                                    {
                                         type: 'hbox',
                                         widths: ['50%', '50%'],
                                         children: [
