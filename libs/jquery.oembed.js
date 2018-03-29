@@ -73,7 +73,7 @@
                                     provider = $.fn.oembed.getOEmbedProvider(data['long-url']);
 
                                     //remove fallback
-                                    if (!!settings.fallback === false) {
+                                    if (settings.fallback === false) {
                                         provider = provider.name.toLowerCase() === 'opengraph' ? null : provider;
                                     }
 
@@ -88,7 +88,7 @@
                                     }
                                 },
                                 error: function () {
-                                    settings.onError.call(container, resourceURL)
+                                    settings.onError.call(container, resourceURL);
                                 }
                             }, settings.longUrlAjaxOptions || settings.ajaxOptions || {});
 
@@ -101,7 +101,7 @@
                 provider = $.fn.oembed.getOEmbedProvider(resourceURL);
 
                 //remove fallback
-                if (!!settings.fallback === false) {
+                if (settings.fallback === false) {
                     provider = provider.name.toLowerCase() === 'opengraph' ? null : provider;
                 }
                 if (provider !== null) {
@@ -387,9 +387,20 @@
                     dataType: embedProvider.dataType || 'jsonp',
                     success: function(data) {
                         var oembedData = $.extend({}, data);
+                        provider = null;
+                        for (var i = 0; i < $.fn.oembed.providers.length; i++) {
+                            if ($.fn.oembed.providers[i].name.toLowerCase() === oembedData.provider_name.toLowerCase()) {
+                                provider = $.fn.oembed.providers[i];
+                                break;
+                            }
+                        }
+                        // apply an pre-emptive mods, if any, to the provider html
+                        if (provider != null && provider.formatter)
+                            oembedData = provider.formatter(oembedData);
+
                         switch (oembedData.type) {
                         case "file":
-//Deviant Art has this
+                        //Deviant Art has this
                         case "photo":
                             oembedData.code = $.fn.oembed.getPhotoCode(externalUrl, oembedData);
                             break;
@@ -403,13 +414,15 @@
                         }
                         success(oembedData, externalUrl, container);
                     },
-                error: settings.onError.call(container, externalUrl, embedProvider)
+                error: function(jqXHR, textStatus, errorThrown) {
+                        settings.onError.call(container, externalUrl, embedProvider);
+                    }
                 }, settings.ajaxOptions || {});
 
             $.ajax(ajaxopts);
         }
     }
-
+    
     function getNormalizedParams(params) {
         if (params === null) return null;
         var key, normalizedParams = {};
@@ -499,6 +512,15 @@
     };
 
     $.fn.oembed.getRichCode = function(url, oembedData) {
+        if (oembedData.html.indexOf('<iframe') !== -1 && settings.title !== '') {
+            if (oembedData.html.indexOf('title') === -1)
+                return oembedData.html.replace(/<iframe/, '<iframe title="' + settings.title + '"');
+
+        } else if (oembedData.html.indexOf('embed') !== -1 && settings.title !== '') {
+            if (oembedData.html.indexOf('title') === -1)
+                return oembedData.html.replace(/<embed/, '<embed aria-label="' + settings.title + '"');
+        }
+
         return oembedData.html;
     };
 
@@ -762,7 +784,17 @@
         new $.fn.oembed.OEmbedProvider("shoudio", "rich", ["shoudio.com/.+", "shoud.io/.+"], "http://shoudio.com/api/oembed"),
         new $.fn.oembed.OEmbedProvider("mixcloud", "rich", ["mixcloud.com/.+"], 'http://www.mixcloud.com/oembed/', {useYQL: 'json'}),
         new $.fn.oembed.OEmbedProvider("rdio.com", "rich", ["rd.io/.+", "rdio.com"], "http://www.rdio.com/api/oembed/"),
-        new $.fn.oembed.OEmbedProvider("Soundcloud", "rich", ["soundcloud.com/.+", "snd.sc/.+"], "//soundcloud.com/oembed", {format: 'js'}),
+        new $.fn.oembed.OEmbedProvider("Soundcloud", "rich", ["soundcloud.com/.+", "snd.sc/.+"], "//soundcloud.com/oembed", {
+            format: 'js',
+            width: 250, height: 250,
+            formatter: function(results) {
+                var url = results.html.replace(/visual=true/, 'visual=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&');
+                url = url.replace(/show_artwork=true/, 'show_artwork=false');
+                results.html = url;
+
+                return results;
+            }
+        }),
         new $.fn.oembed.OEmbedProvider("bandcamp", "rich", ["bandcamp\\.com/album/.+"], null,
             {
                 yql: {
