@@ -691,7 +691,7 @@
         $.fn.oembed.providers = [
             //Video
             new $.fn.oembed.OEmbedProvider("youtube", "video", ["youtube\\.com/watch.+v=[\\w-]+&?", "youtu\\.be/[\\w-]+", "youtube.com/embed"], '//www.youtube.com/embed/$1?wmode=transparent', {
-                templateRegex: /.*(?:v\=|be\/|embed\/)([\w\-]+)(?:&[^t]=[\w]*)*(?:&t=([\d]+[hms](?:\d+[ms]){1,2}|[\d]+[h]|[\d]+[m]|[\d]+[s])?)?/,embedtag: {tag: 'iframe',width: '425',height: '349'}
+                templateRegex: /.*(?:v\=|be\/|embed\/)([\w-]+)(?:[?&]t=(\w*))?/,embedtag: {tag: 'iframe',width: '425',height: '349'}
             }),
 
         //new $.fn.oembed.OEmbedProvider("youtube", "video", ["youtube\\.com/watch.+v=[\\w-]+&?", "youtu\\.be/[\\w-]+"], 'http://www.youtube.com/oembed', {useYQL:'json'}),
