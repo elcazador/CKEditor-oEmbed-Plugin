@@ -272,6 +272,10 @@
                 if (externalUrl.match(embedProvider.templateRegex).length > 2 && typeof externalUrl.match(embedProvider.templateRegex)[2] != 'undefined') {
                   var time = externalUrl.match(embedProvider.templateRegex);
                   var units = time[2].match(/[hms]+/g);
+                  if (!units) {
+                      // If the time string didn't include units, default to seconds.
+                      units = ["s"]
+                  }
                   var digits = time[2].match(/\d+/g);
                   var seconds = 0;
                   for (var i = 0; i < units.length;i++) {
