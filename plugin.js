@@ -6,7 +6,7 @@
 */
 
 (function() {
-        CKEDITOR.plugins.add('oembed', {
+    CKEDITOR.plugins.add('oembed', {
             icons: 'oembed',
             hidpi: true,
             requires: 'widget,dialog',
@@ -20,7 +20,7 @@
                 loadjQueryLibaries();
 
                 CKEDITOR.tools.extend(CKEDITOR.editor.prototype, {
-                    oEmbed: function(url, maxWidth, maxHeight, responsiveResize) {
+                    oEmbed: function(url, maxWidth, maxHeight, responsiveResize, article) {
 
                         if (url.length < 1 || url.indexOf('http') < 0) {
                             alert(editor.lang.oembed.invalidUrl);
@@ -40,7 +40,7 @@
                                 responsiveResize = false;
                             }
 
-                            embedCode(url, editor, false, maxWidth, maxHeight, responsiveResize);
+                            embedCode(url, editor, false, maxWidth, maxHeight, responsiveResize, article);
                         }
 
                         if (typeof(jQuery.fn.oembed) === 'undefined') {
@@ -88,6 +88,7 @@
                         var data = {
                             title: this.element.data('title') || '',
                             oembed: this.element.data('oembed') || '',
+                            article: this.element.data('article') || '',
                             resizeType: this.element.data('resizeType') || 'noresize',
                             maxWidth: this.element.data('maxWidth') || 560,
                             maxHeight: this.element.data('maxHeight') || 315,
@@ -152,7 +153,7 @@
                     }
                 }
 
-                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title) {
+                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title, article) {
                     if (title === '') {
                         alert(editor.lang.oembed.titleError);
                         return false;
@@ -171,6 +172,10 @@
                             if (title !== '') {
                                 widget.element.data('title', title);
                             }
+
+                            //if (videoTranscript !== '') {
+                                widget.element.data('article', article);
+                            //}
 
                             widget.element.data('align', align);
                             // TODO handle align
@@ -230,6 +235,7 @@
                         embedMethod: 'editor',
                         title: title,
                         expandUrl: false,
+                        article: article,
                     });
                 }
 
@@ -245,7 +251,8 @@
                                 resizeType: this.widget.element.data('resizeType') || 'noresize',
                                 maxWidth: this.widget.element.data('maxWidth'),
                                 maxHeight: this.widget.element.data('maxHeight'),
-                                align: this.widget.element.data('align') || 'none'
+                                align: this.widget.element.data('align') || 'none',
+                                article: this.widget.element.data('article') || ''
                             };
 
                             this.widget.setData(data);
@@ -253,6 +260,8 @@
                             this.getContentElement('general', 'resizeType').setValue(data.resizeType);
 
                             this.getContentElement('general', 'align').setValue(data.align);
+
+                            this.getContentElement('general', 'article').setValue(data.article);
 
                             var resizetype = this.getContentElement('general', 'resizeType').getValue(),
                                 maxSizeBox = this.getContentElement('general', 'maxSizeBox').getElement(),
@@ -318,6 +327,7 @@
                                                     getValue(),
                                                 maxWidth = null,
                                                 maxHeight = null,
+                                                article = dialog.getContentElement('general', 'article').getValue(),
                                                 responsiveResize = false,
                                                 editorInstance = dialog.getParentEditor();
 
@@ -350,7 +360,7 @@
                                                 responsiveResize = false;
                                             }
 
-                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title);
+                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title, article);
 
                                             widget.setData('title', title);
                                             widget.setData('oembed', inputCode);
@@ -358,9 +368,21 @@
                                             widget.setData('align', align);
                                             widget.setData('maxWidth', maxWidth);
                                             widget.setData('maxHeight', maxHeight);
+                                            widget.setData('article', article);
                                         }
-                                    },
-                                    {
+                                    }, {
+                                        type: 'text',
+                                        id: 'article',
+                                        focus: function() {
+                                          this.getElement().focus();
+                                        },
+                                        label: editor.lang.oembed.article,
+                                        setup: function(widget) {
+                                          if (widget.data.article) {
+                                            this.setValue(widget.data.article);
+                                          }
+                                        },
+                                    }, {
                                         type: 'hbox',
                                         widths: ['50%', '50%'],
                                         children: [

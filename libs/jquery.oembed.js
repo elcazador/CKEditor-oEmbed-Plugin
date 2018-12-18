@@ -145,6 +145,7 @@
         longUrlAjaxOptions: {},
         expandUrl: true,
         title: null,
+        article: null,
     };
 
     /* Private functions */

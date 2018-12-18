@@ -14,6 +14,7 @@ CKEDITOR.plugins.setLang('oembed', 'en', {
     maxHeight: "Max. Height:",
     maxWidthTitle: "Maximum Width for the embeded Content",
     maxHeightTitle: "Maximum Height for the embeded Content",
+    article: "Video Transcript Article <span class='oembed-required'>[Required]</span>:",
 	none:'None',
     resizeType: "Resize Type (videos only):",
     noresize: "No Resize (use default)",
