@@ -81,6 +81,8 @@
                     template:
                         '<div class="' + (editor.config.oembed_WrapperClass != null ? editor.config.oembed_WrapperClass : "embeddedContent") + '">' +
                             '</div>',
+                        //'<div class="' + (editor.config.oembed_WrapperClass != null ? editor.config.oembed_WrapperClass : "embeddedContent") + '">' +
+                        //    '<div class="video-transcript"><a href="' + '' + '">' + 'Transcript for 'video title' video' + '</a></div></div>',
                     upcast: function(element) {
                         return element.name == 'div' && element.hasClass(editor.config.oembed_WrapperClass != null ? editor.config.oembed_WrapperClass : "embeddedContent");
                     },
@@ -158,6 +160,12 @@
                         alert(editor.lang.oembed.titleError);
                         return false;
                     }
+
+                    if (article === '') {
+                        alert(editor.lang.oembed.articleError);
+                        return false;
+                    }
+
                     jQuery('body').oembed(url, {
                         onEmbed: function(e) {
                             var elementAdded = false,
@@ -173,9 +181,9 @@
                                 widget.element.data('title', title);
                             }
 
-                            //if (videoTranscript !== '') {
+                            if (article !== '') {
                                 widget.element.data('article', article);
-                            //}
+                            }
 
                             widget.element.data('align', align);
                             // TODO handle align
