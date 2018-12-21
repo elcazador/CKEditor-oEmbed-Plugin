@@ -14,7 +14,7 @@ CKEDITOR.plugins.setLang('oembed', 'en', {
   maxHeight: "Max. Height:",
   maxWidthTitle: "Maximum Width for the embeded Content",
   maxHeightTitle: "Maximum Height for the embeded Content",
-  article: "Transcript Article Link <span class='oembed-required'>[Required]</span>:",
+  article: "Transcript URL <span class='oembed-required'>[Required]</span>:",
   none:"None",
   resizeType: "Resize Type (videos only):",
   noresize: "No Resize (use default)",
@@ -23,5 +23,5 @@ CKEDITOR.plugins.setLang('oembed', 'en', {
   noVimeo: "The owner of this video has set domain restrictions and you will not be able to embed it on your website.",
   Error: "Media Content could not been retrieved, please try a different URL.",
   titleError: "Media Title is required to meet accessibility standards.",
-  articleError: "Please enter the transcript article link."
+  articleError: "Transcript required. Please include the Transcript URL."
 });
