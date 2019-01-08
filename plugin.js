@@ -88,6 +88,7 @@
                         var data = {
                             title: this.element.data('title') || '',
                             oembed: this.element.data('oembed') || '',
+                            transcriptUrl: this.element.data('transcriptUrl') || '',
                             resizeType: this.element.data('resizeType') || 'noresize',
                             maxWidth: this.element.data('maxWidth') || 560,
                             maxHeight: this.element.data('maxHeight') || 315,
@@ -152,9 +153,13 @@
                     }
                 }
 
-                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title) {
+                function embedCode(url, instance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title, transcriptUrl) {
                     if (title === '') {
                         alert(editor.lang.oembed.titleError);
+                        return false;
+                    }
+                    if (transcriptUrl === '') {
+                        alert(editor.lang.oembed.transcriptUrlError);
                         return false;
                     }
                     jQuery('body').oembed(url, {
@@ -170,6 +175,10 @@
 
                             if (title !== '') {
                                 widget.element.data('title', title);
+                            }
+
+                            if (transcriptUrl !== '') {
+                                widget.element.data('transcriptUrl', transcriptUrl);
                             }
 
                             widget.element.data('align', align);
@@ -202,11 +211,26 @@
                                 elementAdded = true;
                             } else if (typeof e.code[0].outerHTML === 'string') {
 
-                                if (widget.element.$.firstChild) {
+                                // Clear previous content before adding updated versions.
+                                // The previous version of this code removed the first child,
+                                // but that's now insufficient if there is an additional
+                                // transcript child.
+                                while (widget.element.$.firstChild) {
                                     widget.element.$.removeChild(widget.element.$.firstChild);
                                 }
 
+                                // Add the embed content.
                                 widget.element.appendHtml(e.code[0].outerHTML);
+
+                                // If a transcript URL was provided, output a link for it.
+                                if (transcriptUrl) {
+                                    var linkElem = jQuery('<a>', {
+                                        text: Drupal.t('Transcript for \'@title\' video', { '@title': title }),
+                                        href: transcriptUrl,
+                                    });
+                                    widget.element.appendHtml(linkElem[0].outerHTML);
+                                }
+
                                 widget.element.data('oembed', url);
                                 widget.element.data('oembed_provider', provider.name);
                                 widget.element.addClass('oembed-provider-' + provider.name);
@@ -229,6 +253,7 @@
                         useResponsiveResize: responsiveResize,
                         embedMethod: 'editor',
                         title: title,
+                        transcriptUrl: transcriptUrl,
                         expandUrl: false,
                     });
                 }
@@ -242,6 +267,7 @@
                             var data = {
                                 title: this.widget.element.data('title') || '',
                                 oembed: this.widget.element.data('oembed') || '',
+                                transcriptUrl: this.widget.element.data('transcriptUrl') || '',
                                 resizeType: this.widget.element.data('resizeType') || 'noresize',
                                 maxWidth: this.widget.element.data('maxWidth'),
                                 maxHeight: this.widget.element.data('maxHeight'),
@@ -249,6 +275,8 @@
                             };
 
                             this.widget.setData(data);
+
+                            this.getContentElement('general', 'transcriptUrl').setValue(data.transcriptUrl);
 
                             this.getContentElement('general', 'resizeType').setValue(data.resizeType);
 
@@ -311,6 +339,7 @@
                                         commit: function(widget) {
                                             var dialog = CKEDITOR.dialog.getCurrent(),
                                                 title = dialog.getValueOf('general', 'embedTitle'),
+                                                transcriptUrl = dialog.getValueOf('general', 'transcriptUrl'),
                                                 inputCode = dialog.getValueOf('general', 'embedCode').replace(/\s/g, ""),
                                                 resizeType = dialog.getContentElement('general', 'resizeType').
                                                     getValue(),
@@ -323,6 +352,11 @@
 
                                             if (inputCode.length < 1 || inputCode.indexOf('http') < 0) {
                                                 alert(editor.lang.oembed.invalidUrl);
+                                                return false;
+                                            }
+
+                                            if (transcriptUrl.length < 1 || transcriptUrl.indexOf('http') < 0) {
+                                                alert(editor.lang.oembed.transcriptUrlError);
                                                 return false;
                                             }
 
@@ -350,17 +384,29 @@
                                                 responsiveResize = false;
                                             }
 
-                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title);
+                                            embedCode(inputCode, editorInstance, maxWidth, maxHeight, responsiveResize, resizeType, align, widget, title, transcriptUrl);
 
                                             widget.setData('title', title);
                                             widget.setData('oembed', inputCode);
+                                            widget.setData('transcriptUrl', transcriptUrl);
                                             widget.setData('resizeType', resizeType);
                                             widget.setData('align', align);
                                             widget.setData('maxWidth', maxWidth);
                                             widget.setData('maxHeight', maxHeight);
                                         }
-                                    },
-                                    {
+                                    }, {
+                                        type: 'text',
+                                        id: 'transcriptUrl',
+                                        focus: function() {
+                                            this.getElement().focus();
+                                        },
+                                        label: editor.lang.oembed.transcriptUrl,
+                                        setup: function(widget) {
+                                            if (widget.data.transcriptUrl) {
+                                                this.setValue(widget.data.transcriptUrl);
+                                            }
+                                        },
+                                    }, {
                                         type: 'hbox',
                                         widths: ['50%', '50%'],
                                         children: [
