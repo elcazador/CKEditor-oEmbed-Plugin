@@ -21,5 +21,8 @@ CKEDITOR.plugins.setLang('oembed', 'en', {
     custom: "Specific Resize",
     noVimeo: "The owner of this video has set domain restrictions and you will not be able to embed it on your website.",
     Error: "Media Content could not been retrieved, please try a different URL.",
-    titleError: "Media Title is required to meet accessibility standards."
+    titleError: "Media Title is required to meet accessibility standards.",
+    transcriptUrl: "Transcript URL <span class='oembed-required'>[Required]</span>:",
+    transcriptUrlError: "Transcript required. Please include the Transcript URL.",
+    transcriptLink: "Transcript for 'TITLE' video"
 });

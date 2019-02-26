@@ -23,5 +23,8 @@ CKEDITOR.plugins.setLang('oembed', 'fr', {
 	custom: "Redimensionnement spécifique",
 	noVimeo: "Le proporiétaire de cette vidéo a mis une restriction de domaine et vous ne pourrez pas l'inclure sur votre site.",
 	Error: "Le contenu média ne peut être accédé, veuillez essayer avec une autre URL.",
-    titleError: "Le titre est requis afin de satisfaire les exigences de WCAG."
+    titleError: "Le titre est requis afin de satisfaire les exigences de WCAG.",
+	transcriptUrl: "Transcript URL <span class='oembed-required'>[Required]</span>:",
+	transcriptUrlError: "Transcript required. Please include the Transcript URL.",
+	transcriptLink: "Transcript for 'TITLE' video"
 });

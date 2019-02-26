@@ -82,6 +82,7 @@
                                         provider.maxWidth = settings.maxWidth;
                                         provider.maxHeight = settings.maxHeight;
                                         provider.title = settings.title;
+                                        provider.transcriptUrl = settings.transcriptUrl;
                                         embedCode(container, resourceURL, provider);
                                     } else {
                                         settings.onProviderNotFound.call(container, resourceURL);
@@ -145,6 +146,7 @@
         longUrlAjaxOptions: {},
         expandUrl: true,
         title: null,
+        transcriptUrl: null,
     };
 
     /* Private functions */
@@ -267,6 +269,7 @@
                 var width = embedProvider.embedtag.width || 'auto';
                 var height = embedProvider.embedtag.height || 'auto';
                 var title = settings.title || '';
+                var transcriptUrl = settings.transcriptUrl || '';
                 var src = externalUrl.replace(embedProvider.templateRegex, embedProvider.apiendpoint);
                 // Append to source the time if one was provided.
                 if (externalUrl.match(embedProvider.templateRegex).length > 2 && typeof externalUrl.match(embedProvider.templateRegex)[2] != 'undefined') {
@@ -361,7 +364,6 @@
                         .attr('frameborder', embedProvider.embedtag.frameborder || "0");
                     if (title !=='')
                         code.attr('title', title);
-
                 }
 
                 success({code: code}, externalUrl, container);
