@@ -26,5 +26,5 @@ CKEDITOR.plugins.setLang('oembed', 'fr', {
     titleError: "Le titre est requis afin de satisfaire les exigences de WCAG.",
 	transcriptUrl: "Transcript URL <span class='oembed-required'>[Required]</span>:",
 	transcriptUrlError: "Transcript required. Please include the Transcript URL.",
-	transcriptLink: "Transcript for 'TITLE' video"
+	transcriptLink: "Transcription du vidéo 'TITLE'"
 });
