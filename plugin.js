@@ -225,7 +225,7 @@
                                 // If a transcript URL was provided, output a link for it.
                                 if (transcriptUrl) {
                                     var linkElem = jQuery('<a>', {
-                                        text: Drupal.t('Transcript for \'!title\' video', { '!title': title }),
+                                        text: Drupal.t("Transcript for '!title' video", { '!title': title }),
                                         href: transcriptUrl,
                                     });
                                     widget.element.appendHtml(linkElem[0].outerHTML);
